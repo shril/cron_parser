@@ -1,4 +1,5 @@
 from __future__ import annotations
+from cron_exceptions import InvalidValueException
 
 
 class Token:
@@ -6,6 +7,16 @@ class Token:
         self.field_type = field_type.replace('Field', '')
         self.range_min, self.range_max = range
         self.field = field
+
+    def validate(self, result):
+        for item in result:
+            if self.range_min <= item <= self.range_max:
+                continue
+            else:
+                raise InvalidValueException(f'{self.field_type} Value {item} out of range')
+
+    def validate_value(self, value):
+        self.validate([value])
 
 
 class WildcardToken(Token):
@@ -22,11 +33,7 @@ class CommaToken(Token):
 
     def generate_values(self):
         result = [int(value) for value in self.field.split(',')]
-        for item in result:
-            if self.range_min <= item <= self.range_max:
-                continue
-            else:
-                raise ValueError(f'{self.field_type} Value {item} out of range')
+        super().validate(result)
         return result
 
 
@@ -37,11 +44,7 @@ class RangeToken(Token):
     def generate_values(self):
         start, end = self.field.split('-')
         result = list(range(int(start), int(end) + 1))
-        for item in result:
-            if self.range_min <= item <= self.range_max:
-                continue
-            else:
-                raise ValueError(f'{self.field_type} Value {item} out of range')
+        super().validate(result)
         return result
 
 
@@ -51,15 +54,10 @@ class StepRangeToken(Token):
 
     def generate_values(self):
         begin, step = self.field.split('/')
-        start = self.range_min if begin == '*' else int(begin)
-        if start < self.range_min or start > self.range_max:
-            raise ValueError(f'{self.field_type} Value {start} out of range')
+        start = self.range_min if begin == '*' or begin == '' else int(begin)
+        super().validate_value(start)
         result = list(range(start, self.range_max + 1, int(step)))
-        for item in result:
-            if self.range_min <= item <= self.range_max:
-                continue
-            else:
-                raise ValueError(f'{self.field_type} Value {item} out of range')
+        super().validate(result)
         return result
 
 
@@ -69,9 +67,7 @@ class ValueToken(Token):
 
     def generate_values(self):
         if self.field.isdigit():
-            if self.range_min <= int(self.field) <= self.range_max:
-                return [int(self.field)]
-            else:
-                raise ValueError(f'{self.field_type} Value {self.field} out of range')
+            super().validate_value(int(self.field))
+            return [int(self.field)]
         else:
-            raise ValueError(f'{self.field_type} Value {self.field} is not a number')
+            raise InvalidValueException(f'{self.field_type} Value {self.field} is not a number')

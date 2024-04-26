@@ -7,6 +7,7 @@ abspath = currentPath + "/../src/cron_parser"
 sys.path.append(abspath)
 
 from cron_expression import CronExpression
+from cron_exceptions import ArgumentException, InvalidValueException
 
 
 def test_simple():
@@ -47,11 +48,11 @@ def test_all_comma():
 
 def test_minute_value_out_of_range():
     cron_string = "75 6 1,15 * 1-5 /usr/bin/find"
-    with pytest.raises(ValueError):
+    with pytest.raises(InvalidValueException):
         CronExpression().get_fields_and_values(cron_string)
 
 
 def test_minute_value_invalid():
     cron_string = "# 6 1,15 * 1-5 /usr/bin/find"
-    with pytest.raises(ValueError):
+    with pytest.raises(InvalidValueException):
         CronExpression().get_fields_and_values(cron_string)

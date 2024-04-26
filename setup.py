@@ -9,6 +9,6 @@ setup(
     package_dir={"": "src"},
     entry_points={
         'console_scripts': [
-            'cron_parser=cron_parser.__main__:main'],
+            'cron_parser=cron_parser.main:main'],
     }
 )
