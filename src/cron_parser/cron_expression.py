@@ -15,7 +15,7 @@ class CronExpression:
         }
 
     @staticmethod
-    def generate_output(fields_map: dict) -> list[str]:
+    def generate_output(fields_map: dict) -> str:
         lines = []
         for field, values in fields_map.items():
             if field == 'command':

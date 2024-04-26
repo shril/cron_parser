@@ -12,12 +12,3 @@ if __name__ == '__main__':
     parser.add_argument('cron_string', type=str, help='Cron string to parse')
     args = parser.parse_args()
     main(args.cron_string)
-
-# from mastermind import MasterMind
-#
-# def main():
-#     game = MasterMind()
-#     game.run()
-#
-# if __name__ == "__main__":
-#     main()

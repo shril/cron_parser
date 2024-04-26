@@ -65,7 +65,7 @@ class DayOfWeekField(BaseField):
     RANGE = (1, 7)
 
     def __init__(self, field) -> None:
-        super().__init__(field, DayOfMonthField.RANGE)
+        super().__init__(field, DayOfWeekField.RANGE)
 
     def get_values(self, **kwargs) -> list[int | None]:
         return super().get_values(self.__class__.__name__)

@@ -50,8 +50,11 @@ class StepRangeToken(Token):
         super().__init__(range, field_type, field)
 
     def generate_values(self):
-        _, step = self.field.split('/')
-        result = list(range(self.range_min, self.range_max + 1, int(step)))
+        begin, step = self.field.split('/')
+        start = self.range_min if begin == '*' else int(begin)
+        if start < self.range_min or start > self.range_max:
+            raise ValueError(f'{self.field_type} Value {start} out of range')
+        result = list(range(start, self.range_max + 1, int(step)))
         for item in result:
             if self.range_min <= item <= self.range_max:
                 continue

@@ -1,8 +1,6 @@
 import os
 from cron_expression import CronExpression
 
-MODULE_PATH = os.path.dirname(os.path.abspath(__file__))
-
 
 class CronParser:
     def __init__(self, cron_string):
