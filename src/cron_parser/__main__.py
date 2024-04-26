@@ -4,6 +4,7 @@ from deliveroo_parser import CronParser
 
 def main(cron_string):
     cron_parser = CronParser(cron_string)
+    cron_parser.find_next_n_occurrences(10)
     print(cron_parser.get_output_data())
 
 

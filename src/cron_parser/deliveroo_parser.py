@@ -10,3 +10,6 @@ class CronParser:
 
     def get_output_data(self):
         return self.output_data
+
+    def find_next_n_occurrences(self, n):
+        CronExpression.find_next_n_occurrences(self.fields_map, n)
