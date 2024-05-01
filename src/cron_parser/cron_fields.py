@@ -7,18 +7,17 @@ class BaseField(object):
         self.field = field
         self.range = range
 
-    def get_values(self, field_type) -> list[int | None]:
-        match self.field:
-            case '*':
-                return WildcardToken(self.range, field_type).generate_values()
-            case field if '-' in field:
-                return RangeToken(self.range, field_type, self.field).generate_values()
-            case field if '/' in field:
-                return StepRangeToken(self.range, field_type, self.field).generate_values()
-            case field if ',' in field:
-                return CommaToken(self.range, field_type, self.field).generate_values()
-            case _:
-                return ValueToken(self.range, field_type, self.field).generate_values()
+    def get_values(self, field_type) -> list[int] | None:
+        if self.field == '*':
+            return WildcardToken(self.range, field_type).generate_values()
+        elif '-' in self.field:
+            return RangeToken(self.range, field_type, self.field).generate_values()
+        elif '/' in self.field:
+            return StepRangeToken(self.range, field_type, self.field).generate_values()
+        elif ',' in self.field:
+            return CommaToken(self.range, field_type, self.field).generate_values()
+        else:
+            return ValueToken(self.range, field_type, self.field).generate_values()
 
 
 class MinuteField(BaseField):
@@ -27,7 +26,7 @@ class MinuteField(BaseField):
     def __init__(self, field) -> None:
         super().__init__(field, range=MinuteField.RANGE)
 
-    def get_values(self, **kwargs) -> list[int | None]:
+    def get_values(self, **kwargs) -> list[int] | None:
         return super().get_values(self.__class__.__name__)
 
 
@@ -37,7 +36,7 @@ class HourField(BaseField):
     def __init__(self, field) -> None:
         super().__init__(field, range=HourField.RANGE)
 
-    def get_values(self, **kwargs) -> list[int | None]:
+    def get_values(self, **kwargs) -> list[int] | None:
         return super().get_values(self.__class__.__name__)
 
 
@@ -47,7 +46,7 @@ class DayOfMonthField(BaseField):
     def __init__(self, field) -> None:
         super().__init__(field, DayOfMonthField.RANGE)
 
-    def get_values(self, **kwargs) -> list[int | None]:
+    def get_values(self, **kwargs) -> list[int] | None:
         return super().get_values(self.__class__.__name__)
 
 
@@ -57,7 +56,7 @@ class MonthField(BaseField):
     def __init__(self, field) -> None:
         super().__init__(field, MonthField.RANGE)
 
-    def get_values(self, **kwargs) -> list[int | None]:
+    def get_values(self, **kwargs) -> list[int] | None:
         return super().get_values(self.__class__.__name__)
 
 
@@ -67,5 +66,5 @@ class DayOfWeekField(BaseField):
     def __init__(self, field) -> None:
         super().__init__(field, DayOfWeekField.RANGE)
 
-    def get_values(self, **kwargs) -> list[int | None]:
+    def get_values(self, **kwargs) -> list[int] | None:
         return super().get_values(self.__class__.__name__)
