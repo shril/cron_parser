@@ -10,10 +10,10 @@ class BaseField(object):
     def get_values(self, field_type) -> list[int] | None:
         if self.field == '*':
             return WildcardToken(self.range, field_type).generate_values()
-        elif '-' in self.field:
-            return RangeToken(self.range, field_type, self.field).generate_values()
         elif '/' in self.field:
             return StepRangeToken(self.range, field_type, self.field).generate_values()
+        elif '-' in self.field:
+            return RangeToken(self.range, field_type, self.field).generate_values()
         elif ',' in self.field:
             return CommaToken(self.range, field_type, self.field).generate_values()
         else:

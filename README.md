@@ -28,7 +28,7 @@ To run the program, follow the commands below
 
 ```bash
 cd src/cron_parser/
-python main.py "/15 0 1,2,3,15 */2 1-5 /usr/bin/find"
+python main.py "*/15 0 1,2,3,15 */2 1-5 /usr/bin/find"
 ```
 
 ### Testing

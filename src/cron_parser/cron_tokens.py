@@ -52,11 +52,23 @@ class StepRangeToken(Token):
     def __init__(self, range: tuple[int, int], field_type: str, field: str) -> None:
         super().__init__(range, field_type, field)
 
+    def get_range_from_prefix(self, prefix: str) -> tuple[int, int]:
+        if prefix == '*':
+            return self.range_min, self.range_max + 1
+        if '-' not in prefix:
+            super().validate_value(int(prefix))
+            return int(prefix), self.range_max + 1
+        start, end = prefix.split('-')
+        super().validate_value(int(start))
+        super().validate_value(int(end))
+        return int(start), int(end) + 1
+
     def generate_values(self) -> list[int] | None:
-        begin, step = self.field.split('/')
-        start = self.range_min if begin == '*' or begin == '' else int(begin)
-        super().validate_value(start)
-        result = list(range(start, self.range_max + 1, int(step)))
+        prefix, step = self.field.split('/')
+        if prefix == '' or step == '':
+            raise InvalidValueException(f'{self.field_type} Value {self.field} is not valid')
+        start, end = self.get_range_from_prefix(prefix)
+        result = list(range(start, end, int(step)))
         super().validate(result)
         return result
 
