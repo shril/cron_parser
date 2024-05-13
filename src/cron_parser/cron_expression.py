@@ -1,4 +1,3 @@
-import re
 from cron_fields import MinuteField, HourField, DayOfWeekField, MonthField, DayOfMonthField, YearField
 
 
@@ -12,12 +11,13 @@ class CronExpression:
             'day of month': DayOfMonthField(day_of_month).get_values(),
             'day of week': DayOfWeekField(day_of_week).get_values(),
             'month': MonthField(month).get_values(),
-            'command': command
         }
         if len(command) > 1 and command[0][:4].isdigit():
             year, *new_command = command[0], command[1]
             result['year'] = YearField(year).get_values()
             result['command'] = new_command[0]
+        else:
+            result['command'] = command[0]
         return result
 
     @staticmethod
