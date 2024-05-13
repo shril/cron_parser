@@ -9,8 +9,8 @@ class CronExpression:
             'minute': MinuteField(minute).get_values(),
             'hour': HourField(hour).get_values(),
             'day of month': DayOfMonthField(day_of_month).get_values(),
-            'day of week': DayOfWeekField(day_of_week).get_values(),
             'month': MonthField(month).get_values(),
+            'day of week': DayOfWeekField(day_of_week).get_values()
         }
         if len(command) > 1 and command[0][:4].isdigit():
             year, *new_command = command[0], command[1]
