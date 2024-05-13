@@ -19,6 +19,20 @@ class BaseField(object):
         else:
             return ValueToken(self.range, field_type, self.field).generate_values()
 
+    @staticmethod
+    def name_to_digit_mapper(field, mapper):
+        has_name = False
+        field = field.lower()
+        for name, value in mapper.items():
+            if name in field:
+                field = field.replace(name, value)
+                has_name = True
+        return field, has_name
+
+    @staticmethod
+    def digit_to_name_mapper(result, mapper):
+        return [mapper[value].upper() for value in result]
+
 
 class MinuteField(BaseField):
     RANGE = (0, 59)
@@ -69,19 +83,12 @@ class MonthField(BaseField):
     INVERTED_MONTHS_MAP = {int(v): k for k, v in MONTHS_MAP.items()}
 
     def __init__(self, field) -> None:
-        self.names = False
-        field = field.lower()
-        for month, value in MonthField.MONTHS_MAP.items():
-            if month in field:
-                field = field.replace(month, str(value))
-                self.names = True
-        super().__init__(field, MonthField.RANGE)
+        processed_field, self.has_name = BaseField.name_to_digit_mapper(field, MonthField.MONTHS_MAP)
+        super().__init__(processed_field, MonthField.RANGE)
 
     def get_values(self, **kwargs) -> list[int | str] | None:
         result = super().get_values(self.__class__.__name__)
-        if not self.names:
-            return result
-        return [MonthField.INVERTED_MONTHS_MAP[value] for value in result]
+        return result if not self.has_name else BaseField.digit_to_name_mapper(result, MonthField.INVERTED_MONTHS_MAP)
 
 
 class DayOfWeekField(BaseField):
@@ -98,16 +105,11 @@ class DayOfWeekField(BaseField):
     INVERTED_DAY_OF_WEEK_MAP = {int(v): k for k, v in DAY_OF_WEEK_MAP.items()}
 
     def __init__(self, field) -> None:
-        self.names = False
-        field = field.lower()
-        for day, value in DayOfWeekField.DAY_OF_WEEK_MAP.items():
-            if day in field:
-                field = field.replace(day, str(value))
-                self.names = True
-        super().__init__(field, DayOfWeekField.RANGE)
+        processed_field, self.has_name = BaseField.name_to_digit_mapper(field, DayOfWeekField.DAY_OF_WEEK_MAP)
+        super().__init__(processed_field, DayOfWeekField.RANGE)
 
     def get_values(self, **kwargs) -> list[int | str] | None:
         result = super().get_values(self.__class__.__name__)
-        if not self.names:
-            return result
-        return [DayOfWeekField.INVERTED_DAY_OF_WEEK_MAP[value] for value in result]
+        return result if not self.has_name else BaseField.digit_to_name_mapper(
+            result, DayOfWeekField.INVERTED_DAY_OF_WEEK_MAP
+        )
