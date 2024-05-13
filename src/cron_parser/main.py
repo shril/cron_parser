@@ -4,8 +4,8 @@ from cron_exceptions import ArgumentException
 
 
 def main(cron_string) -> None:
-    if len(cron_string.split()) != 6:
-        raise ArgumentException('Cron string should have 6 fields')
+    if len(cron_string.split()) < 6:
+        raise ArgumentException('Cron string should have minimum 6 fields')
     fields_map = CronExpression.get_fields_and_values(cron_string)
     output_data = CronExpression.generate_output(fields_map)
     print(output_data)

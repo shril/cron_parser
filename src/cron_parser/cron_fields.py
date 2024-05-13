@@ -68,3 +68,13 @@ class DayOfWeekField(BaseField):
 
     def get_values(self, **kwargs) -> list[int] | None:
         return super().get_values(self.__class__.__name__)
+
+
+class YearField(BaseField):
+    RANGE = (1970, 2099)
+
+    def __init__(self, field) -> None:
+        super().__init__(field, YearField.RANGE)
+
+    def get_values(self, **kwargs) -> list[int] | None:
+        return super().get_values(self.__class__.__name__)
