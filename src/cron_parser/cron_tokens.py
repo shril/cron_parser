@@ -43,7 +43,11 @@ class RangeToken(Token):
 
     def generate_values(self) -> list[int] | None:
         start, end = self.field.split('-')
-        result = list(range(int(start), int(end) + 1))
+        start_val, end_val = int(start), int(end)
+        if start_val <= end_val:
+            result = list(range(int(start), int(end) + 1))
+        else:
+            result = list(range(int(start), self.range_max + 1)) + list(range(self.range_min, int(end) + 1))
         super().validate(result)
         return result
 
