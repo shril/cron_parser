@@ -52,19 +52,62 @@ class DayOfMonthField(BaseField):
 
 class MonthField(BaseField):
     RANGE = (1, 12)
+    MONTHS_MAP = {
+        'jan': '1',
+        'feb': '2',
+        'mar': '3',
+        'apr': '4',
+        'may': '5',
+        'jun': '6',
+        'jul': '7',
+        'aug': '8',
+        'sep': '9',
+        'oct': '10',
+        'nov': '11',
+        'dec': '12',
+    }
+    INVERTED_MONTHS_MAP = {int(v): k for k, v in MONTHS_MAP.items()}
 
     def __init__(self, field) -> None:
+        self.names = False
+        field = field.lower()
+        for month, value in MonthField.MONTHS_MAP.items():
+            if month in field:
+                field = field.replace(month, str(value))
+                self.names = True
         super().__init__(field, MonthField.RANGE)
 
-    def get_values(self, **kwargs) -> list[int] | None:
-        return super().get_values(self.__class__.__name__)
+    def get_values(self, **kwargs) -> list[int | str] | None:
+        result = super().get_values(self.__class__.__name__)
+        if not self.names:
+            return result
+        return [MonthField.INVERTED_MONTHS_MAP[value] for value in result]
 
 
 class DayOfWeekField(BaseField):
     RANGE = (1, 7)
+    DAY_OF_WEEK_MAP = {
+        'sun': '1',
+        'mon': '2',
+        'tue': '3',
+        'wed': '4',
+        'thu': '5',
+        'fri': '6',
+        'sat': '7',
+    }
+    INVERTED_DAY_OF_WEEK_MAP = {int(v): k for k, v in DAY_OF_WEEK_MAP.items()}
 
     def __init__(self, field) -> None:
+        self.names = False
+        field = field.lower()
+        for day, value in DayOfWeekField.DAY_OF_WEEK_MAP.items():
+            if day in field:
+                field = field.replace(day, str(value))
+                self.names = True
         super().__init__(field, DayOfWeekField.RANGE)
 
-    def get_values(self, **kwargs) -> list[int] | None:
-        return super().get_values(self.__class__.__name__)
+    def get_values(self, **kwargs) -> list[int | str] | None:
+        result = super().get_values(self.__class__.__name__)
+        if not self.names:
+            return result
+        return [DayOfWeekField.INVERTED_DAY_OF_WEEK_MAP[value] for value in result]
