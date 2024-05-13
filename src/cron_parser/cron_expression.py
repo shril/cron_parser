@@ -13,7 +13,7 @@ class CronExpression:
     @staticmethod
     def get_fields_and_values(cron_string: str) -> dict:
         minute, hour, day_of_month, month, day_of_week, *command = cron_string.split()
-        process_command = CronExpression.process_command(command) if len(command) > 0 else command
+        process_command = CronExpression.process_command(command) if len(command) > 1 else command
         return {
             'minute': MinuteField(minute).get_values(),
             'hour': HourField(hour).get_values(),
